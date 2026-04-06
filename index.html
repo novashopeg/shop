@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOVA - منصة الخدمات المتكاملة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #8E44AD; /* بنفسجي NOVA */
+            --accent: #F1C40F;  /* أصفر NOVA */
+            --bg: #050510;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at top right, #1a0b2e, transparent),
+                              radial-gradient(circle at bottom left, #0b1a2e, transparent);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+       /* --- شاشة التحميل الجديدة --- */
+#loader {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 10000; transition: 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.loader-logo {
+    width: 150px; /* يمكنك تكبيره أو تصغيره حسب الرغبة */
+    filter: drop-shadow(0 0 20px var(--primary));
+    animation: logo-pulse 2s infinite ease-in-out;
+}
+
+/* أنيميشن الـ Fade In & Out مع تكبير بسيط */
+@keyframes logo-pulse {
+    0%, 100% { 
+        opacity: 0.2; 
+        transform: scale(0.9); 
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.1); 
+    }
+}
+      
+        /* --- الهيدر والبحث --- */
+        header {
+            padding: 15px; display: flex; align-items: center; gap: 12px;
+            position: sticky; top: 0; z-index: 900; background: rgba(5, 5, 16, 0.8);
+            backdrop-filter: blur(15px);
+        }
+        .search-box {
+            flex: 1; position: relative;
+        }
+        .search-box input {
+            width: 100%; background: var(--glass); border: 1px solid var(--glass-border);
+            padding: 12px 45px 12px 15px; border-radius: 15px; color: white; outline: none;
+            transition: 0.3s;
+        }
+        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(142, 68, 173, 0.3); }
+        .search-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--accent); }
+        
+        .main-logo { width: 45px; height: 45px; object-fit: contain; }
+
+        /* --- السلايدر --- */
+        .slider-wrapper { margin: 15px; position: relative; border-radius: 20px; overflow: hidden; }
+        .slider-container { display: flex; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        .slide { min-width: 100%; height: 180px; position: relative; }
+        .slide img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .slider-dots {
+            position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 8px;
+        }
+        .dot { 
+            width: 8px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 50%; 
+            transition: 0.3s; cursor: pointer;
+        }
+        .dot.active { background: var(--accent); width: 22px; border-radius: 10px; }
+
+     /* تحسين عناوين الأقسام */
+.section-title {
+    padding: 25px 20px 10px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+}
+
+.section-title span {
+    color: var(--accent);
+    font-size: 0.8rem;
+    background: rgba(241, 196, 15, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* شبكة الخدمات المطورة */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 15px;
+}
+
+/* تصميم الكارت الاحترافي */
+.service-card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+    border-radius: 24px;
+    padding: 10px;
+    border: 1px solid var(--glass-border);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--primary);
+    box-shadow: 0 15px 30px rgba(142, 68, 173, 0.2);
+}
+
+.card-img-wrapper {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.card-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.5s;
+}
+
+.service-card:hover img {
+    transform: scale(1.1);
+}
+
+.service-card p {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #efefef;
+    margin: 5px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* بادج عدد المنتجات */
+.product-count {
+    font-size: 0.65rem;
+    color: var(--accent);
+    background: rgba(241, 196, 15, 0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+/* تأثير لمعة على الكارت */
+.service-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.03), transparent);
+    transform: rotate(45deg);
+    transition: 0.5s;
+}
+
+.service-card:hover::after {
+    left: 100%;
+}
+
+        /* --- التنبيه الاحترافي (Toast) --- */
+        #custom-alert {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: rgba(142, 68, 173, 0.95); color: white; padding: 12px 25px;
+            border-radius: 15px; z-index: 10001; font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,0.2);
+        }
+        #custom-alert.show { transform: translateX(-50%) translateY(0); }
+
+        /* --- البار السفلي --- */
+        nav.bottom-bar {
+            position: fixed; bottom: 0; width: 100%; background: rgba(10, 10, 30, 0.95);
+            display: flex; justify-content: space-around; padding: 12px 0 25px;
+            border-top: 1px solid var(--glass-border); backdrop-filter: blur(20px); z-index: 1000;
+        }
+        .nav-item { 
+            color: #777; text-decoration: none; display: flex; flex-direction: column; 
+            align-items: center; font-size: 0.75rem; transition: 0.3s;
+        }
+        .nav-item.active { color: var(--accent); }
+        .nav-item i { font-size: 1.4rem; margin-bottom: 5px; }
+
+        /* --- بقية الأقسام --- */
+        .page { display: none; padding-bottom: 100px; animation: slideUp 0.4s ease; }
+        .page.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .profile-container { padding: 20px; }
+        .user-card { 
+            background: var(--glass); padding: 25px; border-radius: 25px; 
+            text-align: center; border: 1px solid var(--glass-border);
+        }
+        .balance-chip {
+            background: linear-gradient(90deg, var(--primary), #63308a);
+            padding: 15px; border-radius: 15px; margin-top: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .settings-group { margin-top: 20px; background: var(--glass); border-radius: 20px; overflow: hidden; }
+        .setting-row { 
+            padding: 18px; display: flex; justify-content: space-between; 
+            border-bottom: 1px solid var(--glass-border); cursor: pointer;
+        }
+
+        .auth-container { padding: 40px 25px; text-align: center; }
+        .social-btn {
+            width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 15px;
+            border: none; font-weight: 700; display: flex; align-items: center; 
+            justify-content: center; gap: 12px; cursor: pointer;
+        }
+        .btn-google { background: white; color: black; }
+        .btn-apple { background: black; color: white; }
+        .btn-fb { background: #1877F2; color: white; }
+
+        .setting-row span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.setting-row i {
+    color: var(--accent);
+}
+
+/* تنسيقات صفحة النقاط */
+.mission-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 15px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.mission-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.mission-info i {
+    font-size: 1.5rem;
+    color: var(--accent);
+    background: rgba(241, 196, 15, 0.1);
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+.m-title { font-weight: 700; font-size: 0.9rem; }
+.m-reward { color: var(--accent); font-size: 0.8rem; margin-top: 2px; }
+
+.m-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* حالة المهمة المكتملة */
+.mission-card.done {
+    opacity: 0.6;
+    filter: grayscale(0.5);
+    pointer-events: none; /* لمنع الضغط مرة أخرى */
+}
+
+.completed-icon {
+    display: none;
+    color: #2ecc71;
+    font-size: 1.5rem;
+}
+
+.mission-card.done .m-btn { display: none; }
+.mission-card.done .completed-icon { display: block; }
+
+
+/* ضيف دول مع الستايل القديم بتاعك */
+.auth-input {
+    width: 100%; padding: 14px; margin-bottom: 12px;
+    border-radius: 12px; border: 1px solid var(--glass-border);
+    background: var(--glass); color: white; outline: none;
+}
+
+    </style>
+</head>
+<body>
+
+    <div id="custom-alert">
+        <i class="fa-solid fa-circle-info"></i>
+        <span id="alert-text"></span>
+    </div>
+
+    <div id="loader">
+    <img src="Logo.png" alt="NOVA" class="loader-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/116/116345.png'">
+</div>
+
+    <header>
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="ابحث عن شدات، حسابات، خدمات...">
+        </div>
+        <img src="Logo.png" alt="NOVA" class="main-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/116/116345.png'">
+    </header>
+
+   <main id="home-page" class="page active">
+    <div class="slider-wrapper">
+        <div class="slider-container" id="slider">
+            <div class="slide"><img src="Serv.png"></div>
+            <div class="slide"><img src="Gift.png"></div>
+        </div>
+        <div class="slider-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    <div class="section-title">
+    شحن الألعاب 
+    <span onclick="showToast('سيتم إضافة المزيد من الألعاب قريباً')">عرض الكل <i class="fa-solid fa-chevron-left"></i></span>
+</div>
+<div class="grid-container" id="games-grid"></div>
+
+<div class="section-title">
+    خدمات السوشيال ميديا 
+    <span onclick="showToast('ستتوفر قريباً...')">عرض الكل <i class="fa-solid fa-chevron-left"></i></span>
+</div>
+<div style="text-align: center; padding: 20px; color: #777; font-size: 0.9rem;">
+    ستتوفر قريباً.....
+</div>
+<div class="grid-container" id="social-grid"></div>
+</main>
+
+   <div id="profile-page" class="page">
+    <div class="profile-container">
+
+        <div class="user-card">
+            <h2>أهلاً بك في NOVA 👋</h2>
+            <p style="color: #888; margin-top: 5px;">أنت غير مسجل حالياً</p>
+
+           <div style="display:flex; gap:10px; margin-top:15px;">
+    <button class="social-btn" style="background: var(--primary); color:white; flex:1;"
+        onclick="switchTab('register-page')">
+        إنشاء حساب
+    </button>
+
+    <button class="social-btn" style="background: var(--accent); color:black; flex:1;"
+        onclick="switchTab('register-page')">
+        تسجيل دخول
+    </button>
+</div>
+        </div>
+
+        <div class="settings-group">
+
+            <div class="setting-row" onclick="switchTab('settings-page')">
+             <span><i class="fa-solid fa-gear"></i> الإعدادات</span>
+                <i class="fa-solid fa-chevron-left"></i>
+            </div>
+
+            <div class="setting-row" onclick="switchTab('support-page')">
+                <span>💬 المساعدة والدعم</span>
+                <i class="fa-solid fa-chevron-left"></i>
+            </div>
+
+            <div class="setting-row" onclick="switchTab('about-page')">
+                <span>ℹ️ من نحن</span>
+                <i class="fa-solid fa-chevron-left"></i>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+   
+    <div id="register-page" class="page">
+    <div class="auth-container">
+        <h1>يلا بينا!</h1>
+        <p>اعمل حسابك دلوقتي في نوفا</p>
+        <div style="margin-top:20px;">
+            <input type="text" id="reg-name" placeholder="الاسم بالكامل" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:none; background:var(--glass); color:white;">
+            <input type="email" id="reg-email" placeholder="البريد الإلكتروني" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:none; background:var(--glass); color:white;">
+            <input type="password" id="reg-pass" placeholder="كلمة السر" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:none; background:var(--glass); color:white;">
+        </div>
+        <button class="social-btn" style="background:var(--primary);" onclick="handleSignup()">إنشاء حساب</button>
+        <p style="margin:15px 0; font-size:0.8rem;">أو سجل بواسطة</p>
+        <button class="social-btn btn-google" onclick="loginWithGoogle()"><img src="https://img.icons8.com/color/24/google-logo.png"> جوجل</button>
+        <p style="margin-top:20px; font-size:0.7rem; color:#888;">تسجيلك يعني موافقتك على <span style="color:var(--accent); cursor:pointer;" onclick="showTerms()">الشروط والأحكام</span></p>
+        <p onclick="switchTab('login-page')" style="margin-top:15px; cursor:pointer;">معاك حساب؟ <b>تسجيل دخول</b></p>
+    </div>
+</div>
+    <!-- صفحة الإعدادات -->
+<div id="settings-page" class="page">
+    <div class="profile-container">
+        <h2>⚙️ الإعدادات</h2>
+        <div class="settings-group">
+            <div class="setting-row" onclick="toggleLanguage()">
+                <span>🌐 اللغة: <b id="lang-status">العربية</b></span>
+            </div>
+            <div class="setting-row" onclick="toggleDarkMode()">
+                <span>🌙 الوضع: <b id="mode-status">ليلي</b></span>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="support-page" class="page">
+    <div class="profile-container">
+        <h2>💬 المساعدة والدعم</h2>
+        <div style="background:var(--glass); padding:20px; border-radius:15px; margin-bottom:15px;">
+            <p>أهلاً بك يا صديقي، ابعتلنا مشكلتك بالتفصيل وهنساعدك في أسرع وقت!</p>
+        </div>
+        <div class="settings-group">
+            <div class="setting-row" onclick="window.open('https://wa.me/201108654110')">
+                <span><i class="fa-brands fa-whatsapp"></i> واتساب</span>
+            </div>
+            <div class="setting-row" onclick="window.open('https://instagram.com/nova.shop.eg')">
+                <span><i class="fa-brands fa-instagram"></i> انستجرام</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="about-page" class="page">
+    <div class="profile-container">
+        <h2>ℹ️ من نحن</h2>
+        <div style="background:var(--glass); padding:20px; border-radius:20px; line-height:1.8;">
+            <p>منصة <b>NOVA</b> هي وجهتك الأولى لشحن الألعاب وخدمات السوشيال ميديا في مصر. نسعى دائماً لتقديم أقل سعر وأسرع خدمة.</p>
+            <p style="margin-top:10px; font-size:0.8rem; color:var(--accent);">النسخة: Demo v.1.0.0</p>
+            <hr style="opacity:0.1; margin:15px 0;">
+            <p>تم التطوير بواسطة: <span onclick="window.open('https://instagram.com/hhamza_hussein')" style="color:var(--accent); font-weight:bold; cursor:pointer;">HAMZA</span></p>
+        </div>
+    </div>
+</div>
+<div id="offers-page" class="page">
+    <div class="profile-container" style="text-align: center; margin-top: 50px;">
+        <i class="fa-solid fa-tags" style="font-size: 4rem; color: var(--accent); margin-bottom: 20px;"></i>
+        <h2 style="margin-bottom: 10px;">قسم العروض</h2>
+        <p style="color: #888;">للأسف مفيش عروض حالياً، خليك متابعنا!</p>
+    </div>
+</div>
+
+<div id="points-page" class="page">
+    <div class="profile-container">
+        <div class="user-card" style="background: linear-gradient(135deg, #8E44AD, #63308a); margin-bottom: 25px;">
+            <p style="font-size: 0.9rem; opacity: 0.9;">رصيدك الحالي</p>
+            <h1 style="font-size: 2.5rem; margin: 10px 0;"><span id="user-points">0</span> <span style="font-size: 1rem;">نقطة</span></h1>
+            <div style="background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; display: inline-block; font-size: 0.8rem;">
+                استبدل نقاطك بخصومات وشدات!
+            </div>
+        </div>
+
+        <h3 style="margin-bottom: 15px;">المهمات اليومية</h3>
+        
+        <div class="missions-container">
+            <div class="mission-card" id="task-signup">
+                <div class="mission-info">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <div>
+                        <p class="m-title">إنشاء حساب جديد</p>
+                        <p class="m-reward">+10 نقطة</p>
+                    </div>
+                </div>
+                <button class="m-btn" onclick="completeTask('task-signup', 10)">ابدأ الآن</button>
+                <i class="fa-solid fa-circle-check completed-icon"></i>
+            </div>
+
+            <div class="mission-card" id="task-recharge">
+                <div class="mission-info">
+                    <i class="fa-solid fa-bolt"></i>
+                    <div>
+                        <p class="m-title">شحن أول مرة</p>
+                        <p class="m-reward">+30 نقطة</p>
+                    </div>
+                </div>
+                <button class="m-btn" onclick="showToast('اشحن رصيدك لتفعيل المهمة')">اشحن الآن</button>
+                <i class="fa-solid fa-circle-check completed-icon"></i>
+            </div>
+
+            <div class="mission-card" id="task-follow">
+                <div class="mission-info">
+                    <i class="fa-brands fa-instagram"></i>
+                    <div>
+                        <p class="m-title">تابعنا على انستجرام</p>
+                        <p class="m-reward">+30 نقطة</p>
+                    </div>
+                </div>
+                <button class="m-btn" onclick="openInsta(); completeTask('task-follow', 30)">تابع الآن</button>
+                <i class="fa-solid fa-circle-check completed-icon"></i>
+            </div>
+
+            <div class="mission-card" id="task-share">
+                <div class="mission-info">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <div>
+                        <p class="m-title">شارك الموقع مع أصدقائك</p>
+                        <p class="m-reward">+50 نقطة</p>
+                    </div>
+                </div>
+                <button class="m-btn" onclick="shareSite(); completeTask('task-share', 50)">شير الآن</button>
+                <i class="fa-solid fa-circle-check completed-icon"></i>
+            </div>
+        </div>
+    </div>
+</div>
+    <nav class="bottom-bar">
+        <a href="#" class="nav-item active" onclick="switchTab('home-page', this)"><i class="fa-solid fa-layer-group"></i>خدماتنا</a>
+    <a href="#" class="nav-item" onclick="switchTab('offers-page', this)"><i class="fa-solid fa-bolt"></i>العروض</a>
+<a href="#" class="nav-item" onclick="switchTab('points-page', this)"><i class="fa-solid fa-coins"></i>النقاط</a>
+        <a href="#" class="nav-item" onclick="switchTab('profile-page', this)"><i class="fa-solid fa-user-gear"></i>الملف الشخصي</a>
+    </nav>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCtTOeJ_p_buSGj21s54qsMnfeGX49Dazg",
+    authDomain: "nova-shop-eg.firebaseapp.com",
+    projectId: "nova-shop-eg",
+    storageBucket: "nova-shop-eg.firebasestorage.app",
+    messagingSenderId: "170585311517",
+    appId: "1:170585311517:web:55a762c2326366e587f9f4",
+    measurementId: "G-TQP39CH091"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const googleProvider = new GoogleAuthProvider();
+
+  // --- ميكانيكا الحالة (هل المستخدم مسجل؟) ---
+  onAuthStateChanged(auth, async (user) => {
+    const profileContent = document.getElementById('user-info-area');
+    if (user) {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const userData = userDoc.data();
+        profileContent.innerHTML = `
+            <div class="user-card">
+                <h2>أهلاً بك، <span id="user-display-name">${userData?.name || 'مستخدم نوفا'}</span>!</h2>
+                <div class="balance-chip">
+                    <span>رصيدك الحالي:</span>
+                    <strong id="balance-txt">0.00 EGP</strong>
+                </div>
+                <button onclick="logout()" class="social-btn" style="margin-top:15px; background:#e74c3c">تسجيل خروج</button>
+            </div>
+        `;
+    } else {
+        profileContent.innerHTML = `
+            <div class="user-card">
+                <h2>أهلاً بك في NOVA 👋</h2>
+                <p style="color: #888;">أنت غير مسجل حالياً</p>
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <button class="social-btn" style="background: var(--primary);" onclick="switchTab('register-page')">إنشاء حساب</button>
+                    <button class="social-btn" style="background: var(--accent); color:black;" onclick="switchTab('login-page')">دخول</button>
+                </div>
+            </div>
+        `;
+    }
+  });
+
+  // جعل الدوال متاحة عالمياً
+  window.loginWithGoogle = () => {
+      signInWithPopup(auth, googleProvider).then(async (result) => {
+          const user = result.user;
+          await setDoc(doc(db, "users", user.uid), { name: user.displayName, balance: 0 }, { merge: true });
+          switchTab('home-page');
+      });
+  };
+      // التحكم في شاشة التحميل
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const loader = document.getElementById('loader');
+        loader.style.opacity = '0';
+        loader.style.visibility = 'hidden'; // لضمان عدم إعاقة اللمس بعد الاختفاء
+        setTimeout(() => loader.style.display = 'none', 1000);
+    }, 2000); // سيختفي اللودر بعد ثانيتين بالضبط
+});
+
+        // 2. السلايدر
+        let currentSlideIdx = 0;
+        const slider = document.getElementById('slider');
+        const dots = document.querySelectorAll('.dot');
+        function moveSlide(idx) {
+            currentSlideIdx = idx;
+            slider.style.transform = `translateX(${currentSlideIdx * 100}%)`;
+            dots.forEach((d, i) => d.classList.toggle('active', i === currentSlideIdx));
+        }
+        setInterval(() => {
+            currentSlideIdx = (currentSlideIdx + 1) % 2;
+            moveSlide(currentSlideIdx);
+        }, 4000);
+
+        // 3. توليد الألعاب (بالشكل الجديد المذكور في الصورة)
+      
+      const games = [
+    { name: "ببجى موبايل", count: 0, img: "images/freefire.png" },
+    { name: "فرى فاير", count: 0, img: "images/pubg.png" },
+    { name: "بلود سترايك", count: 0, img: "images/bloodstrike.png" },
+    { name: "لوردس موبايل", count: 0, img: "images/eggyparty.png" }
+];
+
+        const gamesGrid = document.getElementById('games-grid');
+        games.forEach(g => {
+            gamesGrid.innerHTML += `
+                <div class="service-card" onclick="showEmpty()">
+                    <div class="card-img-wrapper">
+                        <img src="${g.img}" alt="${g.name}">
+                    </div>
+                    <p>${g.name}</p>
+                    <span style="font-size:0.7rem; color:#aaa;">${g.count} منتج</span>
+            `;
+        });
+
+        // 4. التنبيه الاحترافي (بديل الـ Alert)
+     function showToast(message) {
+    const alertBox = document.getElementById('custom-alert');
+    const alertText = document.getElementById('alert-text');
+    alertText.innerText = message;
+    alertBox.classList.add('show');
+    
+    setTimeout(() => {
+        alertBox.classList.remove('show');
+    }, 3000);
+}
+
+// تعديل الدالة القديمة لتعمل مع الجديدة
+function showEmpty() {
+    showToast('عذراً، لم يتم إضافة عروض حالياً');
+}
+        // 5. التنقل والوظائف
+        function switchTab(pageId, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            if(el) {
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                el.classList.add('active');
+            }
+        }
+
+        let hidden = false;
+        function toggleBal(icon) {
+            hidden = !hidden;
+            document.getElementById('balance-txt').innerText = hidden ? "********" : "0.00 EGP";
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        }
+
+function openWhats() {
+    const msg = encodeURIComponent("انا محتاج مساعدة");
+    window.open(`https://wa.me/201108654110?text=${msg}`, "_blank");
+}
+
+function openInsta() {
+    window.open("https://instagram.com/nova.shop.eg", "_blank");
+}
+
+function openDev() {
+    window.open("https://instagram.com/hhamza_hussein", "_blank");
+}
+
+const sliderContainer = document.querySelector('.slider-wrapper');
+const innerSlider = document.getElementById('slider');
+let isPressed = false;
+let startX;
+let x;
+
+// أحداث الماوس
+sliderContainer.addEventListener('mousedown', (e) => {
+    isPressed = true;
+    startX = e.offsetX - innerSlider.offsetLeft;
+    sliderContainer.style.cursor = 'grabbing';
+});
+
+sliderContainer.addEventListener('mouseenter', () => {
+    sliderContainer.style.cursor = 'grab';
+});
+
+sliderContainer.addEventListener('mouseup', () => {
+    sliderContainer.style.cursor = 'grab';
+    isPressed = false;
+    snapSlider();
+});
+
+sliderContainer.addEventListener('mousemove', (e) => {
+    if (!isPressed) return;
+    e.preventDefault();
+    x = e.offsetX;
+    innerSlider.style.transition = 'none'; // إلغاء التنعيم أثناء السحب
+    // تحريك السلايدر يدوياً (تبسيط للعملية)
+    if (x - startX > 50) moveSlide(0);
+    if (x - startX < -50) moveSlide(1);
+});
+
+// أحداث اللمس للهواتف
+sliderContainer.addEventListener('touchstart', (e) => {
+    isPressed = true;
+    startX = e.touches[0].clientX;
+});
+
+sliderContainer.addEventListener('touchend', () => {
+    isPressed = false;
+});
+
+sliderContainer.addEventListener('touchmove', (e) => {
+    if (!isPressed) return;
+    let touchX = e.touches[0].clientX;
+    let diff = startX - touchX;
+    if (diff > 50) {
+        moveSlide(1); // السحب لليسار
+        isPressed = false;
+    } else if (diff < -50) {
+        moveSlide(0); // السحب لليمين
+        isPressed = false;
+    }
+});
+
+function snapSlider() {
+    innerSlider.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+}
+
+// نظام النقاط
+let points = 0;
+
+function completeTask(taskId, reward) {
+    const taskElement = document.getElementById(taskId);
+    
+    if (!taskElement.classList.contains('done')) {
+        // إضافة النقاط
+        points += reward;
+        document.getElementById('user-points').innerText = points;
+        
+        // تغيير شكل المهمة
+        taskElement.classList.add('done');
+        
+        showToast(`مبروك! حصلت على ${reward} نقطة`);
+    }
+}
+
+function shareSite() {
+    const shareData = {
+        title: 'منصة NOVA',
+        text: 'اشحن ألعابك وخدمات السوشيال ميديا بأفضل الأسعار من NOVA!',
+        url: window.location.href
+    };
+    
+    if (navigator.share) {
+        navigator.share(shareData);
+    } else {
+        // لو المتصفح مبييدعمش الـ Share API يفتح واتساب
+        window.open(`https://wa.me/?text=${encodeURIComponent(shareData.text + " " + shareData.url)}`, '_blank');
+    }
+}
+ 
+  // 1. الوضع الليلي الفعلي
+function toggleDarkMode() {
+    const isDark = document.body.style.filter === 'invert(0)';
+    if(isDark) {
+        document.body.style.filter = 'invert(1) hue-rotate(180deg)';
+        document.getElementById('mode-status').innerText = 'نهاري';
+    } else {
+        document.body.style.filter = 'invert(0)';
+        document.getElementById('mode-status').innerText = 'ليلي';
+    }
+}
+
+// 2. تغيير اللغة (تبسيط)
+function toggleLanguage() {
+    const currentLang = document.documentElement.lang;
+    if(currentLang === 'ar') {
+        document.documentElement.lang = 'en';
+        document.documentElement.dir = 'ltr';
+        document.getElementById('lang-status').innerText = 'English';
+        showToast('Language changed to English');
+    } else {
+        document.documentElement.lang = 'ar';
+        document.documentElement.dir = 'rtl';
+        document.getElementById('lang-status').innerText = 'العربية';
+        showToast('تم تغيير اللغة للعربية');
+    }
+}
+
+// 3. عرض الشروط والأحكام
+function showTerms() {
+    alert(`شروط نوفا (NOVA):
+1. الالتزام بسياسة الشحن وقوانين الألعاب.
+2. المنصة غير مسؤولة عن إدخال بيانات خاطئة من المستخدم.
+3. يحق للمنصة تجميد الحسابات المشبوهة.`);
+}
+
+// 4. تسجيل الخروج
+function logout() {
+    const auth = getAuth();
+    signOut(auth).then(() => {
+        showToast('تم تسجيل الخروج بنجاح');
+        location.reload();
+    });
+}
+  
+window.switchTab = switchTab;
+window.showToast = showToast;
+window.showEmpty = showEmpty;
+window.completeTask = completeTask;
+window.openInsta = openInsta;
+window.shareSite = shareSite;
+window.toggleLanguage = toggleLanguage;
+window.toggleDarkMode = toggleDarkMode;
+window.showTerms = showTerms;
+window.logout = logout;
+    </script>
+</body>
+</html>
